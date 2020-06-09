@@ -1,4 +1,3 @@
-from tensorflow.keras.applications.inception_v3 import InceptionV3,preprocess_input
 from tensorflow.keras.preprocessing import image
 from tensorflow.keras.models import load_model
 import numpy as np
@@ -23,7 +22,6 @@ while(True):
         crop4 = cv2.resize(crop4,(300,300))
         x = crop4[...,::-1].astype(np.float32)
         x = np.expand_dims(x, axis=0)
-        # x = preprocess_input(x)
         x = x/250
         y = model.predict(x)
         res = (np.argmax(y))
