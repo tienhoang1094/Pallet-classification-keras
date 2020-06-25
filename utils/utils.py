@@ -832,27 +832,49 @@ def butter_lowpass_filtfilt(data, cutoff=1500, fs=50000, order=5):
     b, a = butter_lowpass(cutoff, fs, order=order)
     return filtfilt(b, a, data)  # forward-backward filter
 
+def draw_border(img, c1,c2, line_length,color=(222, 255, 2),th=2):
+
+    x1, y1 = c1
+    x4, y4 = c2  
+    x2, y2 = (c1[0],c2[1])
+    x3, y3 = (c2[0],c1[1]) 
+
+    cv2.line(img, (x1, y1), (x1 , y1 + line_length), color, th)  #-- top-left
+    cv2.line(img, (x1, y1), (x1 + line_length , y1), color, th)
+
+    cv2.line(img, (x2, y2), (x2 , y2 - line_length), color, th)  #-- bottom-left
+    cv2.line(img, (x2, y2), (x2 + line_length , y2), color, th)
+
+    cv2.line(img, (x3, y3), (x3 - line_length, y3), color, th)  #-- top-right
+    cv2.line(img, (x3, y3), (x3, y3 + line_length), color, th)
+
+    cv2.line(img, (x4, y4), (x4 , y4 - line_length), color, th)  #-- bottom-right
+    cv2.line(img, (x4, y4), (x4 - line_length , y4), color, th)
+
+    return img
 
 def plot_one_box(x, img, color=None, label=None, line_thickness=None):
     # Plots one bounding box on image img
     tl = line_thickness or round(0.002 * (img.shape[0] + img.shape[1]) / 2) + 1  # line/font thickness
     center_agf = (img.shape[1]//2,img.shape[0]//2)
-    color = color or [random.randint(0, 255) for _ in range(3)]
     c1, c2 = (int(x[0]), int(x[1])), (int(x[2]), int(x[3]))
-    center = ((c1[0]+c2[0])//2,(c1[1]+c2[1])//2)
-    space = center[0]-center_agf[0]
-    cv2.rectangle(img, c1, c2, color, thickness=tl, lineType=cv2.LINE_AA)
-    cv2.circle(img,center , 6, color, thickness=tl)
-
-    cv2.line(img, (center_agf[0],180), (center_agf[0]+space,180), [45, 255, 255], 6)
-    cv2.circle(img,(center_agf[0],180) , 3, (0,255,0), -1)
-    cv2.putText(img, 'Distance: '+str(space), (center_agf[0]-40,170), 0, tl / 3, [45, 255, 255], 2, lineType=cv2.LINE_AA)
-    if label:
-        tf = max(tl - 1, 1)  # font thickness
-        t_size = cv2.getTextSize(label, 0, fontScale=tl / 3, thickness=tf)[0]
-        c2 = c1[0] + t_size[0], c1[1] - t_size[1] - 3
-        cv2.rectangle(img, c1, c2, color, -1, cv2.LINE_AA)  # filled
-        cv2.putText(img, label, (c1[0], c1[1] - 2), 0, tl / 3, [225, 255, 255], thickness=tf, lineType=cv2.LINE_AA)
+    if c1[1]>280 and c2[1]<490:
+        center = ((c1[0]+c2[0])//2,(c1[1]+c2[1])//2)
+        space = center[0]-center_agf[0]
+        cv2.rectangle(img, c1, c2, color, thickness=tl, lineType=cv2.LINE_AA)
+        cv2.circle(img,center , 6, color, thickness=tl)
+        draw_border(img,(20,200),(780,500),50,color,th=5)
+        
+        cv2.line(img, (center_agf[0],180), (center_agf[0]+space,180), [45, 255, 255], 6)
+        cv2.circle(img,(center_agf[0],180) , 3, (0,255,0), -1)
+        cv2.putText(img, 'Distance: '+str(space), (center_agf[0]-50,170), 5, 1, [45, 255, 255], 1, lineType=cv2.LINE_AA)
+        if label:
+            tf = max(tl - 1, 1)  # font thickness
+            t_size = cv2.getTextSize(label, 0, fontScale=tl / 3, thickness=tf)[0]
+            c2 = c1[0] + t_size[0], c1[1] - t_size[1] - 3
+            cv2.rectangle(img, c1, c2, color, -1, cv2.LINE_AA)  # filled
+            cv2.putText(img, label, (c1[0], c1[1] - 2), 0, tl / 3, [225, 255, 255], thickness=tf, lineType=cv2.LINE_AA)
+        return space
 
 
 def plot_wh_methods():  # from utils.utils import *; plot_wh_methods()
