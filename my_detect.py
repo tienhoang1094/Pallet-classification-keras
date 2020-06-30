@@ -1,22 +1,25 @@
 from utils.datasets import letterbox
 from utils.utils import *
 
+cap = cv2.VideoCapture('/home/peter-linux/Desktop/AGF/Data-collector/video data/pallet-classes/8_May/2020-05-08-150708.webm')
+# cap.set(3, 1800)  # Khung hinh (Khong thay doi)
+# cap.set(4, 600)
+
 with torch.no_grad():
-    cap = cv2.VideoCapture('test.mp4')
     device = torch_utils.select_device('0')
     torch.backends.cudnn.benchmark = True 
 
     # Load model
-    weights = 'weights/best_yolo5s.pt'
-    print(weights)
+    weights = '/home/peter-linux/Downloads/last.pt'
     model = torch.load(weights, map_location=device)['model']
     model.to(device).eval()
-    names = ['OK', 'NG_pallet', 'NG_wood'] #model.names if hasattr(model, 'names') else model.modules.names
-    colors = [[0,255,0],[0,0,255],[0,0,255]]
+    names = ['OK', 'NG_pallet', 'NG_wood','CCL1'] #model.names if hasattr(model, 'names') else model.modules.names
+    colors = [[0,255,0],[0,0,255],[0,0,255],[0,255,0]]
 
     while(True):
-
+        time.sleep(0.1)
         ret, frame = cap.read()
+        # frame = cv2.resize(frame,(800,600))
         if ret:
             # Cropped processed frame
             process_frame = frame[200:500,20:780]
@@ -27,7 +30,7 @@ with torch.no_grad():
 
             # Predict
             pred = model(img, augment=False)[0]
-            pred = non_max_suppression(pred, 0.8, 0.5,
+            pred = non_max_suppression(pred, 0.4, 0.5,
                                    fast=True, classes=None, agnostic=False)
 
             draw_border(frame,(20,200),(780,500),30,th=4)
