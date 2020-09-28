@@ -1,0 +1,7 @@
+Install:
+pip install -r requirement.txt
+
+
+
+Demo: (it will turn on ur cam and find pallet)
+python my_detect.py
