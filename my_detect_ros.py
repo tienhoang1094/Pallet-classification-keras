@@ -12,10 +12,6 @@ import roslibpy
 
 from utils.datasets import letterbox
 from utils.utils import *
-from tensorflow.keras.models import load_model
-from tensorflow.keras.preprocessing import image
-
-product_model = load_model('/home/peter-linux/Desktop/Pallet-classification-keras/Epoch109-loss0.001-val0.00003.h5')
 product_mapping = ['CCL','Processed CCL','Nothing', 'Other']
 
 check_pallet_req = False

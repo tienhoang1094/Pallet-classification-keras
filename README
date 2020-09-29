@@ -4,4 +4,5 @@ pip install -r requirement.txt
 
 
 Demo: (it will turn on ur cam and find pallet)
-python my_detect.py
+Solo: python my_detect.py
+Interact with ros: python my_detect_ros.py
