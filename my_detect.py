@@ -10,7 +10,7 @@ with torch.no_grad():
     torch.backends.cudnn.benchmark = True 
 
     # Load model
-    weights = '/home/peter-linux/Desktop/AGF/inf_yolo5/weights/5class-best/last5s.pt'
+    weights = '' # link to  model in ./weights
     model = torch.load(weights, map_location=device)['model']
     model.to(device).eval()
     names = model.names if hasattr(model, 'names') else model.modules.names #['OK', 'NG_pallet', 'NG_wood','CCL1'] 
